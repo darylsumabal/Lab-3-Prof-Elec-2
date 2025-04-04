@@ -1,0 +1,1 @@
+//how does the token store automatically in the cookie when i access the user or login
