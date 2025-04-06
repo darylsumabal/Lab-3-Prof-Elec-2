@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { events, registerUser } from "../constant/event";
 import { EventData, useDeleteEvent, useEditEvent } from "../hooks/useEvent";
@@ -37,6 +37,19 @@ const EventCard = ({ event }: EventCardProp) => {
     name: "",
     email: "",
   });
+
+  const [disabled, SetDisabled] = useState(false);
+
+  useEffect(() => {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (register.email == "" || register.name == "") {
+      SetDisabled(true);
+    } else if (!emailPattern.test(register.email)) {
+      SetDisabled(true);
+    } else {
+      SetDisabled(false);
+    }
+  }, [register]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput((prev) => ({
@@ -144,6 +157,7 @@ const EventCard = ({ event }: EventCardProp) => {
         input={input} // Pass state down
         setInput={handleInputChange} //
         handleSubmit={handleSubmit}
+        headerTitle="Edit an event"
       />
 
       <Dialog
@@ -156,6 +170,8 @@ const EventCard = ({ event }: EventCardProp) => {
         input={register} // Pass state down
         setInput={handleInputChangeRegister} //
         handleSubmit={handleSubmitRegister}
+        test={disabled}
+        headerTitle="Register a user"
       />
     </>
   );

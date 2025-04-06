@@ -23,6 +23,8 @@ interface DialogProps<T extends Label> {
   handleSubmit: () => void;
   data: T[];
   isButton?: boolean;
+  headerTitle: string;
+  test?: boolean;
 }
 
 const Dialog = <T extends Label>({
@@ -35,6 +37,8 @@ const Dialog = <T extends Label>({
   handleSubmit,
   data,
   isButton = true,
+  headerTitle,
+  test,
 }: DialogProps<T>) => {
   return (
     <>
@@ -42,7 +46,7 @@ const Dialog = <T extends Label>({
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create your account</ModalHeader>
+          <ModalHeader>{headerTitle}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             {data?.map((event, index) => (
@@ -60,7 +64,12 @@ const Dialog = <T extends Label>({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
+            <Button
+              disabled={test}
+              colorScheme="blue"
+              mr={3}
+              onClick={handleSubmit}
+            >
               Save
             </Button>
             <Button onClick={onClose}>Cancel</Button>

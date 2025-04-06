@@ -1,9 +1,10 @@
 import { date } from "zod";
 import EventModel from "../models/event.model";
 import appAssert from "../utils/appAssert";
-import { NOT_FOUND } from "../constants/http";
+import { CONFLICT, NOT_FOUND } from "../constants/http";
 import UserModel from "../models/user.model";
 import UserEventModel from "../models/user.event.model";
+import mongoose from "mongoose";
 
 export type CreateEventParams = {
   title: string;
@@ -52,19 +53,30 @@ export const registerUserEvent = async (
   id: string,
   data: RegisterUserEventSchema
 ) => {
+
+  appAssert(mongoose.Types.ObjectId.isValid(id), NOT_FOUND, "Invalid event ID");
+
   const event = await EventModel.findById(id);
 
   appAssert(event, NOT_FOUND, "Event not found");
-
+  
   const eventId = event._id;
 
-  const user = await UserEventModel.create({
+  const existingUser = await UserEventModel.findOne({
+    eventId,
+    email: data.email,
+  });
+
+  appAssert(!existingUser, CONFLICT, "Already registered");
+
+  const newUser = await UserEventModel.create({
     eventId,
     name: data.name,
     email: data.email,
   });
 
   return {
-    user,
+    message: "User registered successfully",
+    user: newUser,
   };
 };

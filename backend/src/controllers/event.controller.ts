@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { NOT_FOUND, OK } from "../constants/http";
+import { CONFLICT, NOT_FOUND, OK } from "../constants/http";
 import EventModel from "../models/event.model";
 import {
   createEvent,
